@@ -1,59 +1,42 @@
 package com.example;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class NoteService {
-    private final List<Note> notes = new ArrayList<>();
-    private final AtomicLong counter = new AtomicLong();
 
-    public NoteService() {
-        add(new Note() {{
-            setId(counter.incrementAndGet());
-            setTitle("First Note");
-            setContent("This is the content of the first note.");
-        }});
-        add(new Note() {{
-            setId(counter.incrementAndGet());
-            setTitle("Second Note");
-            setContent("This is the content of the second note.");
-        }});
+    private final NoteRepository noteRepository;
+
+    @Autowired
+    public NoteService(NoteRepository noteRepository) {
+        this.noteRepository = noteRepository;
     }
 
     public List<Note> listAll() {
-        return new ArrayList<>(notes);
+        return noteRepository.findAll();
     }
 
     public Note add(Note note) {
-        note.setId(counter.incrementAndGet());
-        notes.add(note);
-        return note;
+        return noteRepository.save(note);
     }
 
     public void deleteById(long id) {
-        Note note = getById(id);
-        if (note != null) {
-            notes.remove(note);
-        } else {
+        if (!noteRepository.existsById(id)) {
             throw new RuntimeException("Note not found");
         }
+        noteRepository.deleteById(id);
     }
 
     public void update(Note note) {
-        Note existingNote = getById(note.getId());
-        if (existingNote != null) {
-            existingNote.setTitle(note.getTitle());
-            existingNote.setContent(note.getContent());
-        } else {
+        if (!noteRepository.existsById(note.getId())) {
             throw new RuntimeException("Note not found");
         }
+        noteRepository.save(note);
     }
 
     public Note getById(long id) {
-        return notes.stream().filter(note -> note.getId() == id).findFirst().orElse(null);
+        return noteRepository.findById(id).orElseThrow(() -> new RuntimeException("Note not found"));
     }
 }
