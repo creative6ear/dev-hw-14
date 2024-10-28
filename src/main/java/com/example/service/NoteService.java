@@ -1,8 +1,9 @@
-package com.example;
+package com.example.service;
 
+import com.example.model.Note;
+import com.example.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 

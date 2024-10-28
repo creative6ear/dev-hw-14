@@ -1,5 +1,7 @@
-package com.example;
+package com.example.controller;
 
+import com.example.model.Note;
+import com.example.service.NoteService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
